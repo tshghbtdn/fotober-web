@@ -1,34 +1,48 @@
-import EditorTasks, { Task } from '@/components/editorFunctions/EditorTasks';
+// app/editor/page.tsx
+'use client';
 
-// Mock data
-const mockTasks: Task[] = [
-    {
-        id: '1',
-        name: 'Review Article Draft',
-        date: '2025-05-01',
-        deadline: '2025-05-10',
-        instruction: 'Please review the draft for grammar and style.',
-        inputUrl: 'https://drive.example.com/article-draft',
-        status: 'pending',
-    },
-    {
-        id: '2',
-        name: 'Edit Design Specs',
-        date: '2025-05-03',
-        deadline: '2025-05-12',
-        instruction: 'Update the design document with latest feedback.',
-        inputUrl: 'https://dropbox.example.com/design-specs',
-        status: 'in_progress',
-    },
-];
+import { useState } from 'react';
+import ListJob from '@/components/editor/listjob';
+import { Layout, Button, Drawer } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import DrawerSidebar from '@/components/DrawerSidebar';
+
+const { Header, Content } = Layout;
 
 export default function EditorPage() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
     return (
-        <main className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 py-12 px-4">
-            <div className="w-full max-w-4xl mx-auto p-10 bg-white rounded-2xl shadow-lg">
-                <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">Your Tasks</h1>
-                <EditorTasks tasks={mockTasks} />
-            </div>
-        </main>
+        <Layout className="min-h-screen bg-[#f5faff]">
+            <Header className="flex justify-between items-center bg-[#0D3B66] px-4 shadow">
+                <Button
+                    type="text"
+                    onClick={() => setDrawerOpen(true)}
+                    className="text-white hover:text-gray-200"
+                >
+                    <MenuOutlined style={{ fontSize: 20, color: '#fff' }} />
+                </Button>
+                <h1 className="text-white text-lg font-semibold tracking-wide">
+                    Editor Dashboard
+                </h1>
+                <div className="w-8" />
+            </Header>
+            <Content className="p-0">
+            <ListJob />
+            </Content>
+
+
+
+            <Drawer
+                placement="left"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                closable={false}
+                width={280}
+                styles={{ body: { padding: 0 } }}
+            >
+                <DrawerSidebar onClose={() => setDrawerOpen(false)} />
+            </Drawer>
+        </Layout>
     );
 }

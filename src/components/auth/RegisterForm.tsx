@@ -90,8 +90,8 @@ export const RegisterForm = ({ onSwitch, registerSuccessful, registerError }: Pr
                     <Select placeholder="Select a role">
                         <Select.Option value="admin">Admin</Select.Option>
                         <Select.Option value="manager">Manager</Select.Option>
-                        <Select.Option value="staff">Staff</Select.Option>
-                        <Select.Option value="user">User</Select.Option>
+                        <Select.Option value="editor">Editor</Select.Option>
+                        <Select.Option value="saler">Saler</Select.Option>
                     </Select>
                 </Form.Item>
 

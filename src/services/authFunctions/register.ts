@@ -5,7 +5,7 @@ export const register = async (username: string, email: string, password: string
 		}
 
 		const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-    	const res = await fetch(SERVER_URL+"/authentication/register", {
+    	const res = await fetch(SERVER_URL+"/auth/register", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

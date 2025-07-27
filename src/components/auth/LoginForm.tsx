@@ -2,27 +2,30 @@
 
 import { Form, Input, Button, Typography } from 'antd';
 import { login } from '../../services/authFunctions/login';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     onSwitch: () => void;
-    loginSuccessful: (token: string) => void;  // Nhận token từ callback
+    loginSuccessful: () => void;
     loginError: (error: any) => void;
 };
 
 export const LoginForm = ({ onSwitch, loginSuccessful, loginError }: Props) => {
     const [form] = Form.useForm();
+    const router = useRouter();
 
     const onFinish = async (values: any) => {
         try {
-            console.log('Logging in:', values);
             const result = await login(values.username, values.password);
-            console.log('Login successful:', result);
+            loginSuccessful();
 
-            loginSuccessful(result.token);  // Truyền token vào loginSuccessful
-
+            if (result.role === 'editor') {
+                router.replace('/editor');
+            } else {
+                router.replace('/');32
+            }
         } catch (error) {
             loginError(error);
-            console.error('Login failed:', error);
         }
     };
 
@@ -50,12 +53,7 @@ export const LoginForm = ({ onSwitch, loginSuccessful, loginError }: Props) => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        block
-                        className="mt-2"
-                    >
+                    <Button type="primary" htmlType="submit" block className="mt-2">
                         Login
                     </Button>
                 </Form.Item>

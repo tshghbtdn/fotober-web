@@ -1,14 +1,18 @@
-// src/components/auth/AuthForm.tsx
+// File: src/components/auth/AuthForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { message } from 'antd';
+import { useRouter, usePathname } from 'next/navigation';
 
 export const AuthForm = () => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const router = useRouter();
+    const pathname = usePathname(); // Sử dụng usePathname để lấy đường dẫn hiện tại
+
 
     const registerSuccessful = () => {
         messageApi.open({

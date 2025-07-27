@@ -1,15 +1,23 @@
 // src/app/page.tsx
-import { cookies } from 'next/headers';
-import DashboardPage from '@/components/dashboard/DashBoardPage';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { AuthForm } from '@/components/auth/AuthForm';
 
-export default async function Home() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+export default function Home() {
+  const router = useRouter();
 
-  if (token) {
-    return <DashboardPage />;
-  }
+  useEffect(() => {
+    // Kiểm tra token và role trong localStorage
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    // Nếu token tồn tại và role là 'editor', chuyển hướng đến '/editor'
+    if (token && role === 'editor') {
+      router.replace('/editor');
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
