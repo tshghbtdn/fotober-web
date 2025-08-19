@@ -9,13 +9,13 @@ export interface Job {
   output: string;
   instruction: string;
   deadline: string | null;
-  user_id: number[];
+  user_id: string[];
   cs_code: string;
   new_job_check: boolean;
 }
 
 export async function createJob(job: Job, token: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/createJob`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Layout, Tabs, Form, Input, DatePicker, Button, Table, Select, Checkbox, InputNumber } from 'antd';
+import { Layout, Tabs, Form, Input, DatePicker, Button, Table, Select, Checkbox, InputNumber, message } from 'antd';
 import { createJob, Job } from '@/services/jobs/createJob';
 import { countTodayJob } from '@/services/jobs/countTodayJob';
 
@@ -50,6 +50,8 @@ export default function CSPage() {
   const [selectedCompounds, setSelectedCompounds] = useState<string[]>([]);
   const [selectedTask, setSelectedTask] = useState<number | null>(null);
   const [csCode, setCsCode] = useState<string | null>(null);
+  const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage(); // popup
 
   // Lấy csCode từ localStorage
   useEffect(() => {
@@ -72,17 +74,12 @@ export default function CSPage() {
 
     const generateJobCode = async (): Promise<string> => {
       if (!csCode) return ``;
-
       const now = new Date();
       const month = now.toLocaleString('en-US', { month: 'short' }).toUpperCase(); // FEB
       const day = String(now.getDate()).padStart(2, '0');
-
       const dayCode = `${month}${day}`;
-
       const todayJobsCount = await countTodayJob();
-
       const stt = String(todayJobsCount + 1).padStart(3, '0');
-
       return `${csCode}${dayCode}${stt}`;
     };
 
@@ -99,15 +96,21 @@ export default function CSPage() {
       deadline: values.deadline?.format('YYYY-MM-DD') || null,
       user_id: [],
       cs_code: csCode || '',
-      new_job_check: false,
+      new_job_check: true,
     };
+
     try {
-      const token=localStorage.getItem('token')||'';
-      const data = await createJob(newJob,token);
-      console.log('Server response:', data);
+      const token = localStorage.getItem('token') || '';
+      await createJob(newJob, token);
       setJobs([...jobs, newJob]);
+
+      messageApi.success('Tạo công việc thành công!'); // popup
+      form.resetFields(); // reset form
+      setSelectedTask(null); // reset state
+      setSelectedCompounds([]);
     } catch (err) {
       console.error(err);
+      messageApi.error('Tạo công việc thất bại!');
     }
   };
 
@@ -144,108 +147,111 @@ export default function CSPage() {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f5faff' }}>
-      <Content style={{ margin: '16px' }}>
-        <div style={{ padding: 24, minHeight: 360, background: '#fff', borderRadius: 8 }}>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="Tạo công việc" key="1">
-              <Form layout="vertical" onFinish={onFinish} style={{ maxWidth: 600 }}>
-                <Form.Item
-                  label="Tên khách hàng"
-                  name="customer_name"
-                  rules={[{ required: true, message: 'Vui lòng nhập tên khách hàng' }]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <Form.Item
-                  label="Thời hạn"
-                  name="deadline"
-                  rules={[{ required: true, message: 'Vui lòng chọn thời hạn' }]}
-                >
-                  <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-
-                <Form.Item
-                  label="Loại công việc"
-                  name="job_type"
-                  rules={[{ required: true, message: 'Vui lòng chọn loại công việc' }]}
-                >
-                  <Select
-                    placeholder="Chọn loại công việc"
-                    onChange={(value) => {
-                      setSelectedTask(value);
-                      setSelectedCompounds([]);
-                    }}
-                  >
-                    {tasktype_info.map(task => (
-                      <Select.Option key={task.id} value={task.id}>
-                        {task.taskname}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                {selectedTask && (
+    <>
+      {contextHolder} {/* popup phải render ở đây */}
+      <Layout style={{ minHeight: '100vh', background: '#f5faff' }}>
+        <Content style={{ margin: '16px' }}>
+          <div style={{ padding: 24, minHeight: 360, background: '#fff', borderRadius: 8 }}>
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="Tạo công việc" key="1">
+                <Form layout="vertical" form={form} onFinish={onFinish} style={{ maxWidth: 600 }}>
                   <Form.Item
-                    label="Yêu cầu công việc"
-                    name="sub_type"
-                    rules={[
-                      {
-                        validator: () =>
-                          selectedCompounds.length > 0
-                            ? Promise.resolve()
-                            : Promise.reject(new Error('Vui lòng chọn ít nhất 1 yêu cầu công việc')),
-                      },
-                    ]}
+                    label="Tên khách hàng"
+                    name="customer_name"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên khách hàng' }]}
                   >
-                    <Checkbox.Group
-                      options={
-                        tasktype_info.find(t => t.id === selectedTask)?.taskcompound.map(c => ({
-                          label: `${c.name} (${c.description})`,
-                          value: c.name,
-                        })) || []
-                      }
-                      value={selectedCompounds}
-                      onChange={(checkedValues) => setSelectedCompounds(checkedValues as string[])}
-                    />
+                    <Input />
                   </Form.Item>
-                )}
 
-                <Form.Item
-                  label="Đường dẫn file gốc"
-                  name="input_file"
-                  rules={[{ required: true, message: 'Vui lòng nhập đường dẫn file gốc' }]}
-                >
-                  <Input placeholder="Nhập file đầu vào" />
-                </Form.Item>
+                  <Form.Item
+                    label="Thời hạn"
+                    name="deadline"
+                    rules={[{ required: true, message: 'Vui lòng chọn thời hạn' }]}
+                  >
+                    <DatePicker style={{ width: '100%' }} />
+                  </Form.Item>
 
-                <Form.Item
-                  label="Khối lượng công việc (số file)"
-                  name="volume"
-                  rules={[{ required: true, message: 'Vui lòng nhập số file' }]}
-                >
-                  <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số file cần chỉnh sửa" />
-                </Form.Item>
+                  <Form.Item
+                    label="Loại công việc"
+                    name="job_type"
+                    rules={[{ required: true, message: 'Vui lòng chọn loại công việc' }]}
+                  >
+                    <Select
+                      placeholder="Chọn loại công việc"
+                      onChange={(value) => {
+                        setSelectedTask(value);
+                        setSelectedCompounds([]);
+                      }}
+                    >
+                      {tasktype_info.map(task => (
+                        <Select.Option key={task.id} value={task.id}>
+                          {task.taskname}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
 
-                <Form.Item label="Chi tiết" name="instruction">
-                  <TextArea rows={4} />
-                </Form.Item>
+                  {selectedTask && (
+                    <Form.Item
+                      label="Yêu cầu công việc"
+                      name="sub_type"
+                      rules={[
+                        {
+                          validator: () =>
+                            selectedCompounds.length > 0
+                              ? Promise.resolve()
+                              : Promise.reject(new Error('Vui lòng chọn ít nhất 1 yêu cầu công việc')),
+                        },
+                      ]}
+                    >
+                      <Checkbox.Group
+                        options={
+                          tasktype_info.find(t => t.id === selectedTask)?.taskcompound.map(c => ({
+                            label: `${c.name} (${c.description})`,
+                            value: c.name,
+                          })) || []
+                        }
+                        value={selectedCompounds}
+                        onChange={(checkedValues) => setSelectedCompounds(checkedValues as string[])}
+                      />
+                    </Form.Item>
+                  )}
 
-                <Form.Item>
-                  <Button type="primary" htmlType="submit">
-                    Tạo công việc
-                  </Button>
-                </Form.Item>
-              </Form>
-            </TabPane>
+                  <Form.Item
+                    label="Đường dẫn file gốc"
+                    name="input_file"
+                    rules={[{ required: true, message: 'Vui lòng nhập đường dẫn file gốc' }]}
+                  >
+                    <Input placeholder="Nhập file đầu vào" />
+                  </Form.Item>
 
-            <TabPane tab="Danh sách công việc đã tạo" key="2">
-              <Table columns={columns} dataSource={jobs} />
-            </TabPane>
-          </Tabs>
-        </div>
-      </Content>
-    </Layout>
+                  <Form.Item
+                    label="Khối lượng công việc (số file)"
+                    name="volume"
+                    rules={[{ required: true, message: 'Vui lòng nhập số file' }]}
+                  >
+                    <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số file cần chỉnh sửa" />
+                  </Form.Item>
+
+                  <Form.Item label="Chi tiết" name="instruction">
+                    <TextArea rows={4} />
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Tạo công việc
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </TabPane>
+
+              <TabPane tab="Danh sách công việc đã tạo" key="2">
+                <Table columns={columns} dataSource={jobs} />
+              </TabPane>
+            </Tabs>
+          </div>
+        </Content>
+      </Layout>
+    </>
   );
 }

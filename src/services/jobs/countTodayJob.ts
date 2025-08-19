@@ -1,5 +1,5 @@
 export async function countTodayJob(): Promise<number> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/countTodayJob`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/countToday`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
