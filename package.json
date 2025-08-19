@@ -1,0 +1,30 @@
+{
+  "name": "fotober-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "antd": "^5.24.8",
+    "js-cookie": "^3.0.5",
+    "next": "^15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "recharts": "^2.15.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/js-cookie": "^3.0.6",
+    "@types/node": "^20.17.30",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3"
+  }
+}
