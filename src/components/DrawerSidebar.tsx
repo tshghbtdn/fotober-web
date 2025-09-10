@@ -4,15 +4,13 @@
 import { Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import { logout } from '@/services/authFunctions/logout';
 
 export default function DrawerSidebar({ onClose }: { onClose: () => void }) {
     const router = useRouter();
 
     const handleLogout = async () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("name");
-        localStorage.removeItem("cscode");
+        logout();
         router.replace("/");
     }
 
