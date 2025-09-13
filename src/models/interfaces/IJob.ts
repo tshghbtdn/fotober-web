@@ -1,3 +1,6 @@
+// src/models/interfaces/IJob.ts
+// IJob interface: cấu trúc dữ liệu của một công việc, bao gồm các thông tin thuộc tính ban đầu
+
 export interface IJob {
   job_code: string;
   customer_name: string;
@@ -12,8 +15,4 @@ export interface IJob {
   user_id: string[];
   cs_code: string;
   new_job_check: boolean;
-
-  status?: string;
-  feedback?: string;
-  next_act: string;
 }
