@@ -1,31 +1,37 @@
-export interface Job {
-	job_code: string;
-	customer_name: string;
-	create_date: string;
-	job_type: number;
-	volume: number;
-	sub_type: number;
-	input: string;
-	instruction: string;
-	deadline: string;
-	output: string;
-}
+import { IJob } from "@/models/interfaces";
 
-export async function fetchJobs(token: string): Promise<Job[]> {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-			'x-client-role': localStorage.getItem('role') || ' ',
-		},
-	});
+export async function fetchJobs(): Promise<IJob[]> {
+	try {
+		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+            throw new Error("SERVER_URL is not defined in the environment variables.");
+        }
 
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(`Failed to fetch jobs (${response.status}): ${errorText}`);
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role') || '';
+
+		if (!token || !role) {
+			throw new Error('Authentication token or role is missing');
+		}
+		
+		const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+				'x-client-role': role,
+			},
+		});
+
+		if (!response.ok) {
+			const errorText = await response.text();
+			throw new Error(`Failed to fetch jobs (${response.status}): ${errorText}`);
+		}
+
+		const data = await response.json();
+		return data;
 	}
-
-	const data = await response.json();
-	return data as Job[];
+	catch (error) {
+		console.error('Error fetching jobs:', error);
+		throw error;
+	}
 }
