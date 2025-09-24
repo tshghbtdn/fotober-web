@@ -29,4 +29,4 @@ export const register = async (username: string, email: string, password: string
 		console.error("Error registering:", error);
 		throw error;
     }
-  };
+};

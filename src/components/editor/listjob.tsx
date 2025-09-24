@@ -3,26 +3,20 @@
 
 import { useState, useEffect } from 'react';
 import { Button, Input, message } from 'antd';
-import { fetchJobs, Job } from '@/services/jobs/getjob';
+import { fetchJobs } from '@/services/jobs/getjob';
 import { updateOutput } from '@/services/jobs/updateOutput';
+import { IJob } from '@/models/interfaces';
 
 export default function ListJob() {
-	const [jobs, setJobs] = useState<Job[]>([]);
-	const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+	const [jobs, setJobs] = useState<IJob[]>([]);
+	const [selectedJob, setSelectedJob] = useState<IJob | null>(null);
 	const [isDetailVisible, setIsDetailVisible] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>('');
 
-	const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
 	const loadJobs = async () => {
-		if (!token) {
-			setError('Token not found');
-			return;
-		}
-
 		try {
-			const data = await fetchJobs(token);
+			const data = await fetchJobs();
 			setJobs(data);
 
 			// Nếu đang mở 1 job, cập nhật lại nó từ danh sách mới
@@ -42,7 +36,7 @@ export default function ListJob() {
 		loadJobs();
 	}, []);
 
-	const handleSelectJob = (job: Job) => {
+	const handleSelectJob = (job: IJob) => {
 		setIsDetailVisible(true);
 		setTimeout(() => {
 			setSelectedJob(job);
@@ -58,12 +52,12 @@ export default function ListJob() {
 	};
 
 	const handleSaveOutput = async () => {
-		if (!selectedJob || !token) return;
+		if (!selectedJob) return;
 
 		try {
-			await updateOutput({ job_code: selectedJob.job_code, output, token });
+			await updateOutput({ job_code: selectedJob.job_code, output });
 			message.success('Output updated successfully');
-			await loadJobs(); // load lại job sau khi lưu
+			await loadJobs();
 		} catch (err: any) {
 			message.error(err.message || 'Failed to update output');
 		}

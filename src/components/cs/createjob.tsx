@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Layout, Tabs, Form, Input, DatePicker, Button, Table, Select, Checkbox, InputNumber, message } from 'antd';
-import { createJob, Job } from '@/services/jobs/createJob';
+import { createJob} from '@/services/jobs/createJob';
 import { countTodayJob } from '@/services/jobs/countTodayJob';
 import { IJob } from "@/models/interfaces";
-import { getJobByCSCode } from "@/services/jobs/getJobByCSCode"; // chỗ bạn vừa viết
+import { getJobByCSCode } from "@/services/jobs/getJobByCSCode";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -100,7 +100,7 @@ export default function CSPage() {
 		return `${csCode}${dayCode}${stt}`;
 	};
 
-	const newJob: Job = {
+	const newJob: IJob = {
 		job_code: await generateJobCode(),
 		customer_name: values.customer_name || '',
 		create_date: new Date().toISOString().split('T')[0],
@@ -117,8 +117,7 @@ export default function CSPage() {
 	};
 
 	try {
-		const token = localStorage.getItem('token') || '';
-		await createJob(newJob, token);
+		await createJob(newJob);
 		setJobs([...jobs, newJob]);
 
 		messageApi.success('Tạo công việc thành công!'); // popup
@@ -149,7 +148,7 @@ export default function CSPage() {
 		title: 'Yêu cầu công việc', 
 		dataIndex: 'sub_type', 
 		key: 'sub_type',
-		render: (subTypeValue: number, record: Job) => {
+		render: (subTypeValue: number, record: IJob) => {
 		const task = tasktype_info.find(t => t.id === record.job_type);
 		if (!task) return '';
 		return task.taskcompound

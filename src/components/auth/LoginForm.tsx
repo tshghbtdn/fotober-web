@@ -23,17 +23,18 @@ export const LoginForm = ({ onSwitch, loginSuccessful, loginError }: Props) => {
                 router.replace('/editor');
             } 
             else 
-            if (result.role==='saler'){
+            if (result.role === 'saler'){
                 router.replace('/cs');
             }
             else if (result.role === 'manager'){
                 router.replace('/manager');
             }
             else{
-                router.replace('/');32
+                router.replace('/');
             }
         } catch (error) {
-            loginError(error);
+            console.log('Login failed:', error);
+            loginError("Wrong username or password");
         }
     };
 

@@ -1,34 +1,35 @@
-export interface Job {
-  job_code: string;
-  customer_name: string;
-  create_date: string;
-  job_type: number;
-  volume: number;
-  sub_type: number;
-  input: string;
-  output: string;
-  instruction: string;
-  deadline: string | null;
-  user_id: string[];
-  cs_code: string;
-  new_job_check: boolean;
-}
+import { IJob } from "@/models/interfaces";
 
-export async function createJob(job: Job, token: string) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      'x-client-role': localStorage.getItem('role') || ' ',
-    },
-    body: JSON.stringify(job),
-  });
+export async function createJob(job: IJob): Promise<void> {
+	try {
+		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+            throw new Error("SERVER_URL is not defined in the environment variables.");
+        }
+		
+		const token = localStorage.getItem('token');
+		const role = localStorage.getItem('role') || '';
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || `Failed to create job (${response.status})`);
-  }
+		if (!token || !role) {
+			throw new Error('Authentication token or role is missing');
+		}
 
-  return response.json() as Promise<Job>;
+		const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/create`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+				'x-client-role': role,
+			},
+			body: JSON.stringify(job),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || `Failed to create job (${response.status})`);
+		}
+	}
+	catch (error) {
+		console.error('Error creating job:', error);
+		throw error;
+	}
 }
