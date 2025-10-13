@@ -260,10 +260,9 @@ export default function CSPage() {
 					</Form.Item>
 				</Form>
 				</TabPane>
-
                     <TabPane tab="Danh sách công việc đã tạo" key="2">
                     <Table columns={columns} dataSource={jobs} rowKey="id" />
-                    </TabPane>
+                </TabPane>
 			</Tabs>
 			</div>
 		</Content>

@@ -31,18 +31,7 @@ export default function EditorPage() {
             <ListJob />
             </Content>
 
-
-
-            <Drawer
-                placement="left"
-                open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
-                closable={false}
-                width={280}
-                styles={{ body: { padding: 0 } }}
-            >
-                <DrawerSidebar onClose={() => setDrawerOpen(false)} />
-            </Drawer>
+            <DrawerSidebar onClose={() => setDrawerOpen(false)} isOpen={drawerOpen} />
         </Layout>
     );
 }
