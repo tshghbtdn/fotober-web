@@ -11,6 +11,7 @@ export const login = async ({
 }): Promise<{
     userInfor?: IUser;
     message?: string;
+    token: string;
 }> => {
     try {
         if (!process.env.SERVER_URL) {
@@ -24,28 +25,19 @@ export const login = async ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password }),
         });
-
         const data = await res.json();
 
         if (!res.ok) {
-            // Trả về lỗi chi tiết từ server
             throw new Error(data.message || "Login failed");
         }
-
-        // Lưu token vào localStorage
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role || ""); 
-            localStorage.setItem("name", data.name);
-            if (data.cscode)    localStorage.setItem("cscode", data.cscode);
-        } else {
-            throw new Error("Token not found in login response");
-        }
-
-        // Trả về role hoặc bất cứ thông tin nào bạn cần
         return {
             message: data.message,
-            // data
+            userInfor: {
+                name: data.name,
+                role: data.role,
+                cscode: data.cscode
+            },
+            token: data.token
         };
     }
     catch (error) {

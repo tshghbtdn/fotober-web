@@ -1,7 +1,7 @@
+// file:src/components/auth/LoginForm.tsx
 'use client';
 
 import { Form, Input, Button, Typography } from 'antd';
-import { login } from '../../services/authFunctions/login';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -14,29 +14,31 @@ export const LoginForm = ({ onSwitch, loginSuccessful, loginError }: Props) => {
     const [form] = Form.useForm();
     const router = useRouter();
 
-    const onFinish = async (values: any) => {
-        try {
-            const result = await login(values.username, values.password);
-            loginSuccessful();
+  const onFinish = async (values: any) => {
+    try {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(values),
+        });
 
-            if (result.role === 'editor') {
-                router.replace('/editor');
-            } 
-            else 
-            if (result.role === 'saler'){
-                router.replace('/cs');
-            }
-            else if (result.role === 'manager'){
-                router.replace('/manager');
-            }
-            else{
-                router.replace('/');
-            }
-        } catch (error) {
-            console.log('Login failed:', error);
-            loginError("Wrong username or password");
-        }
-    };
+        const result = await res.json();
+        if (!result.success) throw new Error(result.message);
+
+        const data = result.data;
+
+        loginSuccessful();
+
+        const role = data.role;
+        if (role === 'editor') router.replace('/editor');
+        else if (role === 'saler') router.replace('/cs');
+        else if (role === 'manager') router.replace('/manager');
+        else router.replace('/');
+    } catch (error) {
+      console.error('Login failed:', error);
+      loginError('Wrong username or password');
+    }
+  };
 
     return (
         <div className="space-y-6">

@@ -1,7 +1,7 @@
 export interface IUser {
-    id: string;
+    id?: string;
     name: string;
-    role: 'editor' | 'manager' | 'admin';
+    role: 'editor' | 'manager' | 'admin'| 'saler';
     email?: string;
-    dateJoined?: string; // Định dạng "YYYY-MM-DD"
+    cscode?: string;
 }

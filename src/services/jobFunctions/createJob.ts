@@ -1,12 +1,11 @@
 import { IJob } from "@/models/interfaces";
 
-export async function createJob(job: IJob): Promise<void> {
+export async function createJob(token: string, job: IJob): Promise<void> {
 	try {
 		if (!process.env.SERVER_URL) {
             throw new Error("SERVER_URL is not defined in the environment variables.");
         }
 		
-		const token = localStorage.getItem('token');
 		const role = localStorage.getItem('role') || '';
 
 		if (!token || !role) {
