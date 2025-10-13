@@ -75,7 +75,7 @@ export default function ManagerLayout({
                     </Sider>
 
                 {/* Nội dung chính */}
-                <Content className="p-4 flex">
+                <Content className="p-4 flex-col gap-4 w-full">
                     {children}
                 </Content>
 

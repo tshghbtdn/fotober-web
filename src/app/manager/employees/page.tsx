@@ -1,6 +1,7 @@
 // components/manager/Employees.tsx
 'use client';
 
+import TimeSheet from '@/components/manager/TimeSheet';
 import { Table, Segmented, Space } from 'antd';
 import { useState } from 'react';
 
@@ -22,7 +23,7 @@ export default function Employees() {
 
 	return (
 		<>
-			<Space direction="vertical" size={16} className="mb-4">
+			<Space direction="horizontal" size={16} className="mb-4">
 				<Segmented<string>
 					options={[
 						{value: 'Statistic', label: 'Thống kê'},
@@ -44,7 +45,7 @@ export default function Employees() {
 				className="rounded-2xl shadow"
 			/>
 
-			
+			<TimeSheet />
 		</>
 	);
 }

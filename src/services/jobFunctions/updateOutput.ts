@@ -6,7 +6,7 @@ export async function updateOutput({
 	output: string;
 }) {
 	try {
-		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+		if (!process.env.SERVER_URL) {
 			throw new Error("SERVER_URL is not defined in the environment variables.");
 		}
 
@@ -17,7 +17,7 @@ export async function updateOutput({
 			throw new Error('Authentication token or role is missing');
 		}
 		
-		const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/output`, {
+		const response = await fetch(`${process.env.SERVER_URL}/job/output`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

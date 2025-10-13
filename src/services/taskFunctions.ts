@@ -1,5 +1,5 @@
 export const createTask = async (description: string, tasktype: number, request: number) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/task/create`, {
+    const res = await fetch(`${process.env.SERVER_URL}/task/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -21,7 +21,7 @@ export const createTask = async (description: string, tasktype: number, request:
 };
 
 export const getAllTasks = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/task/list`, {
+    const res = await fetch(`${process.env.SERVER_URL}/task/list`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -45,7 +45,7 @@ export const getAllTasks = async () => {
 };
 
 export const updateTaskOperator = async (taskId: string, operatorId: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/task/update/${taskId}`, {
+    const res = await fetch(`${process.env.SERVER_URL}/task/update/${taskId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

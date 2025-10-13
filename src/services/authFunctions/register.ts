@@ -1,10 +1,10 @@
 export const register = async (username: string, email: string, password: string, name: string, role: string) => {
 	try {
-		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+		if (!process.env.SERVER_URL) {
 			throw new Error("SERVER_URL is not defined in the environment variables.");
 		}
 
-		const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+		const SERVER_URL = process.env.SERVER_URL;
     	const res = await fetch(SERVER_URL+"/auth/register", {
 			method: "POST",
 			headers: {

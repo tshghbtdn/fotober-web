@@ -3,8 +3,8 @@
 
 import { useState, useEffect } from 'react';
 import { Button, Input, message } from 'antd';
-import { fetchJobs } from '@/services/jobs/getjob';
-import { updateOutput } from '@/services/jobs/updateOutput';
+import { fetchJobs } from '@/services/jobFunctions/getjob';
+import { updateOutput } from '@/services/jobFunctions/updateOutput';
 import { IJob } from '@/models/interfaces';
 
 export default function ListJob() {
