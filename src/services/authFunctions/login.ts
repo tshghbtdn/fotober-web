@@ -1,12 +1,23 @@
 // file: src/services/authFunctions/login.ts
 
-export const login = async (username: string, password: string) => {
+import { IUser } from "@/models/interfaces";
+
+export const login = async ({
+    username,
+    password,
+}: {
+    username: string,
+    password: string,
+}): Promise<{
+    userInfor?: IUser;
+    message?: string;
+}> => {
     try {
-        if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+        if (!process.env.SERVER_URL) {
             throw new Error("SERVER_URL is not defined in the environment variables.");
         }
         
-        const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+        const SERVER_URL = process.env.SERVER_URL;
         const res = await fetch(`${SERVER_URL}/auth/login`, {
             method: "POST",
             credentials: "include",
@@ -31,12 +42,10 @@ export const login = async (username: string, password: string) => {
             throw new Error("Token not found in login response");
         }
 
-        console.log("Login successful:", data);
-
         // Trả về role hoặc bất cứ thông tin nào bạn cần
         return {
             message: data.message,
-            role: data.role,
+            // data
         };
     }
     catch (error) {

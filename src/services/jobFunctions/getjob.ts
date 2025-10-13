@@ -2,7 +2,7 @@ import { IJob } from "@/models/interfaces";
 
 export async function fetchJobs(): Promise<IJob[]> {
 	try {
-		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+		if (!process.env.SERVER_URL) {
             throw new Error("SERVER_URL is not defined in the environment variables.");
         }
 
@@ -13,7 +13,7 @@ export async function fetchJobs(): Promise<IJob[]> {
 			throw new Error('Authentication token or role is missing');
 		}
 		
-		const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job`, {
+		const response = await fetch(`${process.env.SERVER_URL}/job`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

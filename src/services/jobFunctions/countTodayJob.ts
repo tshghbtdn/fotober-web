@@ -1,6 +1,6 @@
 export async function countTodayJob(): Promise<number> {
 	try {
-		if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+		if (!process.env.SERVER_URL) {
             throw new Error("SERVER_URL is not defined in the environment variables.");
         }
 		
@@ -11,7 +11,7 @@ export async function countTodayJob(): Promise<number> {
 			throw new Error('Authentication token or role is missing');
 		}
 		
-		const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/job/countToday`, {
+		const response = await fetch(`${process.env.SERVER_URL}/job/countToday`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Layout, Tabs, Form, Input, DatePicker, Button, Table, Select, Checkbox, InputNumber, message } from 'antd';
-import { createJob} from '@/services/jobs/createJob';
-import { countTodayJob } from '@/services/jobs/countTodayJob';
+import { createJob} from '@/services/jobFunctions/createJob';
+import { countTodayJob } from '@/services/jobFunctions/countTodayJob';
 import { IJob } from "@/models/interfaces";
-import { getJobByCSCode } from "@/services/jobs/getJobByCSCode";
+import { getJobByCSCode } from "@/services/jobFunctions/getJobByCSCode";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;

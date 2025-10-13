@@ -1,3 +1,3 @@
 export * from './taskFunctions';
 export * from './authFunctions';
-export * from './jobs';
+export * from './jobFunctions';

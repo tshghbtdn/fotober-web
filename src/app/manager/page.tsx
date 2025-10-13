@@ -12,7 +12,7 @@ const data = [
 
 export default function ManagerPage() {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
             {/* Thông số công ty */}
             <Card className="rounded-2xl shadow">
                 <h2 className="text-lg font-semibold mb-4">Tổng quan công ty</h2>

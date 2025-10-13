@@ -28,7 +28,7 @@ export default function EditorPage() {
                 <div className="w-8" />
             </Header>
             <Content className="p-0">
-            <ListJob />
+                <ListJob />
             </Content>
 
             <DrawerSidebar onClose={() => setDrawerOpen(false)} isOpen={drawerOpen} />
