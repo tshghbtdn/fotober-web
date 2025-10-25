@@ -6,6 +6,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { logout } from '@/services/authFunctions/logout';
 import { Drawer } from 'antd';
+import { useUserInfor } from '@/contexts/UserInforContext';
 
 export default function DrawerSidebar({
     isOpen,
@@ -15,6 +16,7 @@ export default function DrawerSidebar({
     onClose: () => void
 }) {
     const router = useRouter();
+    // const { user } = useUserInfor();
 
     const handleLogout = async () => {
         logout();
@@ -39,8 +41,8 @@ export default function DrawerSidebar({
                 </div>
 
                 <div className="px-4 py-3 text-sm">
-                    <p className="mb-1">Name: <span className="font-medium">{localStorage.getItem("name") || "Unknown"}</span></p>
-                    <p>Role: <span className="text-blue-600 font-semibold">{localStorage.getItem("role") || "N/A"}</span></p>
+                    {/* <p className="mb-1">Name: <span className="font-medium">{ user?.name || "Unknown"}</span></p> */}
+                    {/* <p>Role: <span className="text-blue-600 font-semibold">{ user?.role || "N/A"}</span></p> */}
                 </div>
 
                 <div className="mt-auto p-4">

@@ -2,8 +2,10 @@
 'use client';
 
 import TimeSheet from '@/components/manager/TimeSheet';
+import { getEmployees } from '@/services/managerFunctions/getEmployees';
 import { Table, Segmented, Space } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { IUser } from '@/models/interfaces';
 
 const columns = [
 	{ title: 'Tên nhân viên', dataIndex: 'name', key: 'name' },
@@ -20,6 +22,20 @@ const data = [
 
 export default function Employees() {
 	const [currentPage, setCurrentPage] = useState<"TimeSheet" | "Statistic">("Statistic");
+	const [employees, setEmployees] = useState<IUser[]|null>(null);
+
+	useEffect(() => {
+		const fetchEmployees = async () => {
+			try {
+				const data = await getEmployees();
+				setEmployees(data);
+			} catch (error) {
+				console.error('Error fetching employees:', error);
+			}
+		};
+
+		fetchEmployees();
+	}, []);
 
 	return (
 		<>

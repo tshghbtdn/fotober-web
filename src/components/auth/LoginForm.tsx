@@ -3,6 +3,10 @@
 
 import { Form, Input, Button, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
+import { login } from '@/services/authFunctions';
+import { IUser } from '@/models/interfaces';
+import { useUserInfor } from '@/contexts/UserInforContext';
+import { use } from 'react';
 
 type Props = {
     onSwitch: () => void;
@@ -13,32 +17,28 @@ type Props = {
 export const LoginForm = ({ onSwitch, loginSuccessful, loginError }: Props) => {
     const [form] = Form.useForm();
     const router = useRouter();
+    const { user } = useUserInfor();
 
-  const onFinish = async (values: any) => {
-    try {
-        const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values),
-        });
+    const onFinish = async (values: { username: string; password: string }) => {
+        try {
+            const res: IUser = await login({
+                username: values.username,
+                password: values.password,
+            });
 
-        const result = await res.json();
-        if (!result.success) throw new Error(result.message);
+            loginSuccessful();
 
-        const data = result.data;
 
-        loginSuccessful();
-
-        const role = data.role;
-        if (role === 'editor') router.replace('/editor');
-        else if (role === 'saler') router.replace('/cs');
-        else if (role === 'manager') router.replace('/manager');
-        else router.replace('/');
-    } catch (error) {
-      console.error('Login failed:', error);
-      loginError('Wrong username or password');
-    }
-  };
+            user.id = res.id;
+            user.name = res.name;
+            user.role = res.role;
+            
+            router.replace('/');
+        } catch (error) {
+            console.error('Login failed:', error);
+            loginError(error);
+        }
+    };
 
     return (
         <div className="space-y-6">

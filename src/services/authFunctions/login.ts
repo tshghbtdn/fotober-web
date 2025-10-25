@@ -1,47 +1,32 @@
 // file: src/services/authFunctions/login.ts
 
-import { IUser } from "@/models/interfaces";
+import { IUser, isUser } from "@/models/interfaces";
 
 export const login = async ({
     username,
-    password,
+    password
 }: {
-    username: string,
-    password: string,
-}): Promise<{
-    userInfor?: IUser;
-    message?: string;
-    token: string;
-}> => {
+    username: string;
+    password: string;
+}): Promise<IUser> => {
     try {
-        if (!process.env.SERVER_URL) {
-            throw new Error("SERVER_URL is not defined in the environment variables.");
-        }
-        
-        const SERVER_URL = process.env.SERVER_URL;
-        const res = await fetch(`${SERVER_URL}/auth/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-        const data = await res.json();
 
-        if (!res.ok) {
-            throw new Error(data.message || "Login failed");
+        const result = await res.json();
+        if (!result.success) throw new Error(result.message);
+
+        const data = result.data;
+        if (!isUser(data)) {
+            throw new Error('Invalid data');
         }
-        return {
-            message: data.message,
-            userInfor: {
-                name: data.name,
-                role: data.role,
-                cscode: data.cscode
-            },
-            token: data.token
-        };
-    }
-    catch (error) {
-        console.error("Error logging in:", error);
+
+        return data;
+    } catch (error) {
+        console.error('Login failed:', error);
         throw error;
     }
-};
+  };
