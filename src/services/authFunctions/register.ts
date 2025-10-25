@@ -1,4 +1,4 @@
-export const register = async (username: string, email: string, password: string, name: string, role: string) => {
+export const register = async (username: string, email: string, password: string, name: string, role: string): Promise<void> => {
 	try {
 		if (!process.env.SERVER_URL) {
 			throw new Error("SERVER_URL is not defined in the environment variables.");
@@ -23,8 +23,6 @@ export const register = async (username: string, email: string, password: string
 		if (!res.ok) {
 			throw new Error(data.message || "Registration fa1iled");
 		}
-
-      	return data;
     } catch (error) {
 		console.error("Error registering:", error);
 		throw error;
